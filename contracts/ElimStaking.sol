@@ -30,6 +30,7 @@ contract Gauntlet is Ownable, ReentrancyGuard, VRFConsumerBaseV2 {
     /* ========== EVENTS ========== */
     event StakeOpened(uint256 timestamp);
     event Staked(address indexed player, uint256 amount);
+        event Unstaked(address indexed player, uint256 amount);
     event StakingClosed(uint256 timestamp, uint256 roundStarted);
     event RoundRequested(uint256 indexed round, uint256 requestId, uint256 requestBlock);
     event RoundRandomFulfilled(uint256 indexed round, uint256 randomness);
@@ -248,7 +249,6 @@ contract Gauntlet is Ownable, ReentrancyGuard, VRFConsumerBaseV2 {
     function stake(uint256 amount, uint256 minReceived) external nonReentrant whenNotPaused {
         require(stakingActive, "staking closed");
         require(amount > 0, "zero amount");
-
         uint256 before = stakingToken.balanceOf(address(this));
         stakingToken.safeTransferFrom(msg.sender, address(this), amount);
         uint256 received = stakingToken.balanceOf(address(this)) - before;
@@ -259,8 +259,25 @@ contract Gauntlet is Ownable, ReentrancyGuard, VRFConsumerBaseV2 {
             participantIndex[msg.sender] = participants.length; // 1-based
         }
         participantInfo[msg.sender].stake += received;
-
         emit Staked(msg.sender, received);
+    }
+
+    // Allow users to unstake while staking is open
+    function unstake() external nonReentrant whenNotPaused {
+        require(stakingActive, "staking closed");
+        uint256 stakeAmount = participantInfo[msg.sender].stake;
+        require(stakeAmount > 0, "no stake");
+
+        // Remove participant from array and mappings
+        uint256 idx = participantIndex[msg.sender];
+        require(idx > 0, "not a participant");
+        _removeParticipantByIndex(idx - 1);
+
+        participantInfo[msg.sender].stake = 0;
+
+        // Transfer tokens back
+        stakingToken.safeTransfer(msg.sender, stakeAmount);
+        emit Unstaked(msg.sender, stakeAmount);
     }
 
     function closeStakingAndStartGauntlet() external onlyOwner whenNotPaused {

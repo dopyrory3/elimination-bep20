@@ -476,6 +476,25 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "player",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Unstaked",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": false,
 						"internalType": "address",
 						"name": "dev",
@@ -1257,6 +1276,13 @@
 			},
 			{
 				"inputs": [],
+				"name": "unstake",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "vrfCallbackGasLimit",
 				"outputs": [
 					{
@@ -1487,11 +1513,11 @@
 			]
 		},
 		"contracts/ElimStaking.sol": {
-			"keccak256": "0xa45e7f74852c4e49abdb901ca938be9f0b642349236a9ebb2ed6a56aeb92bf14",
+			"keccak256": "0x6700e9ba4a9c84e421084afda90ba4c8fa5737d989b139fd166658a4dcf84376",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ce9e3aed99e825919d91bf6d11009a482d90aed899abf108d2e0a861d7bdc6b7",
-				"dweb:/ipfs/QmchoJjH1B5TRwhh62zLfijEZUrtFJreAC3ZHtrBj2yRjL"
+				"bzz-raw://7884eb4649040bdf4ff2f06340ffea13c10f34fb63aff41b750ca5565ab40a87",
+				"dweb:/ipfs/QmXtTgqT4DcDANrnbDQJFGk8PJHtFzQu3B6FmiK13Th397"
 			]
 		}
 	},
